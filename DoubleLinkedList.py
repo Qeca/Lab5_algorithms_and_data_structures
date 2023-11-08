@@ -9,8 +9,12 @@ class IndexOutRangeException(Exception):
     pass
 
 
+class ArraysNotEqualError(Exception):
+    pass
+
+
 @dataclass
-class Book:
+class Book(Generic[T]):
     def __init__(self, author, publisher, page_count, price, isbn):
         self.author = author
         self.publisher = publisher
@@ -18,13 +22,19 @@ class Book:
         self.price = price
         self.isbn = isbn
 
+    def __eq__(self, other: Optional['Book[T]']) -> bool:
+        if self.author == other.author and self.isbn == other.isbn and self.price == other.price and self.page_count == other.page_count and self.publisher == other.publisher:
+            return True
+        else:
+            return False
+
     def __str__(self):
         return f"({self.author}, {self.publisher}, {self.page_count}, {self.price}, {self.isbn})"
 
 
 @dataclass
 class DoublyNode(Generic[T]):
-    data: T
+    data: Optional['Book[T]']
     next_ptr: Optional['DoublyNode[T]'] = None
     prev_ptr: Optional['DoublyNode[T]'] = None
 
@@ -35,6 +45,10 @@ class DoublyLinkedList(Generic[T]):
         self._length: int = 0
         self._head: Optional[DoublyNode[T]] = None
         self._tail: Optional[DoublyNode[T]] = None
+        self.i = 0
+        self.p = 0
+        self.q = 0
+        self.stop = False
 
     def __len__(self) -> int:
         return self._length
@@ -187,7 +201,7 @@ class DoublyLinkedList(Generic[T]):
             node = node.next_ptr
         return min_value
 
-    def gnome_sort(self):
+    def gnome_sort(self) -> Optional['DoublyLinkedList[T]']:
         index = 1
         i = 0
         n = self._length
@@ -201,8 +215,18 @@ class DoublyLinkedList(Generic[T]):
                 i = i - 1
                 if i < 0:
                     i, index = index, index + 1
+        return self
 
-    def counting_sort(self):
+    def copy(self) -> 'DoublyLinkedList[T]':
+        new_list = DoublyLinkedList[T]()
+        current_node = self._head
+        while current_node is not None:
+            new_list.append(current_node.data)
+            current_node = current_node.next_ptr
+
+        return new_list
+
+    def counting_sort(self) -> None:
         min_value = self.find_min(key=lambda x: x.page_count).page_count
         max_value = self.find_max(key=lambda x: x.page_count).page_count
         support = [0 for i in range(max_value - min_value + 1)]
@@ -221,10 +245,75 @@ class DoublyLinkedList(Generic[T]):
             a.append(self.get(sup_1.index(sup_2[k])))
             sup_1[sup_1.index(sup_2[k])] = None
         for ind in range(len(self)):
-            self.set(ind,a[ind])
+            self.set(ind, a[ind])
 
+    def __eq__(self, y: Optional['DoublyLinkedList[T]']) -> bool:
+        if self._length == y._length:
+            for i in range(len(self)):
+                if self.get(i) != y.get(i):
+                    return False
+            return True
+        else:
+            return False
 
+    def __get_fibonacci_number(self, k: int) -> int:
+        first = 0
+        second = 1
+        n = 0
+        while n < k:
+            temp = second
+            second = first + second
+            first = temp
+            n += 1
+        return first
 
+    def __start(self) -> None:
+        self.stop = False
+        k = 0
+        n = len(self)
+        while self.__get_fibonacci_number(k + 1) < len(self):
+            k += 1
+        m = self.__get_fibonacci_number(k + 1) - (n + 1)
+        self.i = self.__get_fibonacci_number(k) - m
+        self.p = self.__get_fibonacci_number(k - 1)
+        self.q = self.__get_fibonacci_number(k - 2)
+
+    def __up_index(self) -> None:
+        if self.p == 1:
+            self.stop = True
+        self.i = self.i + self.q
+        self.p = self.p - self.q
+        self.q = self.q - self.p
+
+    def __down_index(self) -> None:
+        if self.q == 0:
+            self.stop = True
+        self.i = self.i - self.q
+        temp = self.q
+        self.q = self.p - self.q
+        self.p = temp
+
+    def fib_search(self, element: int) -> int:
+        arr_1 = self.copy()
+        arr_1.gnome_sort()
+        if self != arr_1:
+            raise ArraysNotEqualError('Список не отсортрован')
+        else:
+            self.__start()
+            res_ind = -1
+            while not self.stop:
+                if self.i < 0:
+                    self.__up_index()
+                elif self.i >= len(self):
+                    self.__down_index()
+                elif self.get(self.i).page_count == element:
+                    res_ind = self.i
+                    break
+                elif element < self.get(self.i).page_count:
+                    self.__down_index()
+                elif element > self.get(self.i).page_count:
+                    self.__up_index()
+            return self.get(res_ind)
 
 
 if __name__ == '__main__':
