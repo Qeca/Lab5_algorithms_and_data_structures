@@ -166,12 +166,12 @@ class DynamicArray(Generic[T]):
             a_root_index, a_largest = self.get(largest), self.get(root_index)
             self.put(root_index, a_root_index)
             self.put(largest, a_largest)
-            self.__heapify(heap_size, largest)
+            self.__heapify_1(heap_size, largest)
 
     def sort_course(self) -> None:
         n = self._length
         for i in range(n, -1, -1):
-            self.__heapify(n, i)
+            self.__heapify_1(n, i)
         for i in range(n - 1, 0, -1):
             n_i, n_0 = self.get(0), self.get(i)
             self.put(i, n_i)
@@ -203,7 +203,7 @@ class DynamicArray(Generic[T]):
                     r = m1 - 1
                 else:
                     l = m2 + 1
-            return None
+            return "Элемента нет в контейнере"
 
 
 if __name__ == '__main__':

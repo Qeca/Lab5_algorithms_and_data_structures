@@ -73,6 +73,7 @@ class TestLinkedList(unittest.TestCase):
         self.assertEqual(llist.find_min(key=lambda x: x[0]), (1, 2))
 
     def test_gnome_sort(self):
+        self.maxDiff = None
         llist = DoublyLinkedList()
         books = [
             Book("Jane Austen", "Vintage Classics", 368, 14, "978-0099589273"),
@@ -91,9 +92,8 @@ class TestLinkedList(unittest.TestCase):
         for i in books:
             llist.append(i)
         llist.gnome_sort()
-        self.assertEqual(f'{llist}',
-                         "[(Agatha Christie, William Morrow Paperbacks, 288, 7, 978-0062073485) (Ernest Hemingway, Scribner, 332, 10, 978-0684801469) (F. Scott Fitzgerald, Scribner, 180, 7, 978-0743273565) (George Orwell, Signet Classic, 328, 9, 978-0451524935) (George R.R. Martin, Bantam, 694, 9, 978-0553593716) (Harper Lee, Harper Perennial Modern Classics, 376, 8, 978-0061120084) (J.K. Rowling, Bloomsbury Publishing, 332, 19, 978-0747558194) (J.R.R. Tolkien, Mariner Books, 1178, 14, 978-0544003415) (Jane Austen, Vintage Classics, 368, 14, 978-0099589273) (Leo Tolstoy, Vintage Classics, 1392, 12, 978-0670021049) (Mark Twain, Dover Publications, 224, 3, 978-0486400778) (William Golding, Penguin Books, 224, 9, 978-0143129400) ]")
-
+        print()
+        self.assertEqual(f'{llist}', "[(F. Scott Fitzgerald, Scribner, 180, 7, 978-0743273565) (William Golding, Penguin Books, 224, 9, 978-0143129400) (Mark Twain, Dover Publications, 224, 3, 978-0486400778) (Agatha Christie, William Morrow Paperbacks, 288, 7, 978-0062073485) (George Orwell, Signet Classic, 328, 9, 978-0451524935) (J.K. Rowling, Bloomsbury Publishing, 332, 19, 978-0747558194) (Ernest Hemingway, Scribner, 332, 10, 978-0684801469) (Jane Austen, Vintage Classics, 368, 14, 978-0099589273) (Harper Lee, Harper Perennial Modern Classics, 376, 8, 978-0061120084) (George R.R. Martin, Bantam, 694, 9, 978-0553593716) (J.R.R. Tolkien, Mariner Books, 1178, 14, 978-0544003415) (Leo Tolstoy, Vintage Classics, 1392, 12, 978-0670021049) ]")
     def test_counting_sort(self):
         llist = DoublyLinkedList()
         books = [
@@ -119,7 +119,7 @@ class TestLinkedList(unittest.TestCase):
     def test_fib_search(self):
         llist = DoublyLinkedList()
         books = [
-            Book("Jane Austen", "Vintage Classics", 368, 14, "978-0099589273"),
+            Book("Jane Austen", "Vintage Classics", 180, 14, "978-0099589273"),
             Book("George Orwell", "Signet Classic", 328, 9, "978-0451524935"),
             Book("J.K. Rowling", "Bloomsbury Publishing", 332, 19, "978-0747558194"),
             Book("Harper Lee", "Harper Perennial Modern Classics", 376, 8, "978-0061120084"),
@@ -135,7 +135,8 @@ class TestLinkedList(unittest.TestCase):
         for i in books:
             llist.append(i)
         llist.gnome_sort()
-        self.assertEqual(f'{llist.fib_search(180)}', "(F. Scott Fitzgerald, Scribner, 180, 7, 978-0743273565)")
+        self.assertEqual(f'{llist.fib_search(180)}', "(F. Scott Fitzgerald, Scribner, 180, 7, 978-0743273565)") # проверка когда ключи совпадают и впринципе проверка работы
+        self.assertEqual(llist.fib_search(10), "Элемента нет в контейнере") # случай когда ключа нет
 
     def test_eq(self):
         llist = DoublyLinkedList()

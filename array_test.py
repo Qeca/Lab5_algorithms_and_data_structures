@@ -117,13 +117,14 @@ class ArrayCase(unittest.TestCase):
             Student("Hall Charlotte Mia", "117A", 2, 20, 80.5),
             Student("Lee Benjamin Lucas", "118B", 3, 21, 94.5),
             Student("Garcia Mia Emma", "119C", 1, 19, 74.0),
-            Student("King Liam Aiden", "120D", 4, 22, 90.5)
+            Student("King Liam Aiden", "120D", 4, 22, 91.0)
         ]
         arr = DynamicArray(capacity=10)
         for i in students:
             arr.add(i)
         arr.sort_avg_grade()
-        self.assertEqual(f"{arr.ternary_search(91.0)}", "(Moore Oliver Ethan 3 114B 21 91.0)")
+        self.assertEqual(f"{arr.ternary_search(91.0)}", "(Moore Oliver Ethan 3 114B 21 91.0)") # при совпадающих ключах выведется первый нашедшийся
+        self.assertEqual(arr.ternary_search(100.0),"Элемента нет в контейнере") # когда элемента нет
 
     def test_eq(self):
         students = [

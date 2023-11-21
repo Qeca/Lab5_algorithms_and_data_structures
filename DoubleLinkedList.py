@@ -206,7 +206,7 @@ class DoublyLinkedList(Generic[T]):
         i = 0
         n = self._length
         while i < n - 1:
-            if self.get(i).author <= self.get(i + 1).author:
+            if self.get(i).page_count <= self.get(i + 1).page_count:
                 i, index = index, index + 1
             else:
                 a_i, a_i_1 = self.get(i + 1), self.get(i)
@@ -313,6 +313,8 @@ class DoublyLinkedList(Generic[T]):
                     self.__down_index()
                 elif element > self.get(self.i).page_count:
                     self.__up_index()
+            else:
+                return "Элемента нет в контейнере"
             return self.get(res_ind)
 
 
